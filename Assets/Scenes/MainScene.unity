@@ -347,10 +347,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 15
   groundDrag: 3
-  jumpForce: 10
-  jumpCooldown: 2
   airMultiplier: 0.5
+  jumpForce: 12
+  jumpCooldown: 2
+  dashForce: 30
+  dashCooldown: 3
   jumpKey: 32
+  dashKey: 304
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2

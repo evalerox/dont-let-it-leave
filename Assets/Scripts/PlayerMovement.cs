@@ -5,13 +5,19 @@ public class PlayerMovementTutorial : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed;
     public float groundDrag;
+    public float airMultiplier;
+
     public float jumpForce;
     public float jumpCooldown;
-    public float airMultiplier;
     bool readyToJump;
+
+    public float dashForce;
+    public float dashCooldown;
+    bool readyToDash;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode dashKey = KeyCode.LeftShift;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -34,11 +40,12 @@ public class PlayerMovementTutorial : MonoBehaviour
         rb.freezeRotation = true;
 
         readyToJump = true;
+        readyToDash = true;
     }
 
     private void Update()
     {
-        MyInput();
+        InputControl();
         SpeedControl();
         GroundControl();
     }
@@ -48,7 +55,7 @@ public class PlayerMovementTutorial : MonoBehaviour
         MovePlayer();
     }
 
-    private void MyInput()
+    private void InputControl()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
@@ -59,6 +66,16 @@ public class PlayerMovementTutorial : MonoBehaviour
             readyToJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
+        }
+
+        // Check Dash
+        if (Input.GetKeyDown(dashKey) && readyToDash)
+        {
+            readyToDash = false;
+            rb.drag = 0;
+            Dash();
+            rb.drag = groundDrag;
+            Invoke(nameof(ResetDash), dashCooldown);
         }
     }
 
@@ -114,8 +131,31 @@ public class PlayerMovementTutorial : MonoBehaviour
         rb.AddForce(10f * jumpForce * jumpDirection, ForceMode.Impulse);
     }
 
+    private void Dash()
+    {
+        Debug.Log(horizontalInput);
+        Debug.Log(verticalInput);
+        // When there is no input just dash forward
+        if (horizontalInput == 0 && verticalInput == 0)
+        {
+            Vector3 dashDirection = new(cameraOrientation.forward.x, 0, cameraOrientation.forward.z);
+            rb.AddForce(10f * dashForce * dashDirection, ForceMode.VelocityChange);
+        }
+        else
+        {
+            //Vector3 velocity = rb.velocity.normalized;
+            //Vector3 dashDirection = new(velocity.x, 0, velocity.z);
+            rb.AddForce(10f * dashForce * moveDirection.normalized, ForceMode.VelocityChange);
+        }
+    }
+
     private void ResetJump()
     {
         readyToJump = true;
+    }
+
+    private void ResetDash()
+    {
+        readyToDash = true;
     }
 }
