@@ -41,6 +41,8 @@ public class PlayerMovementTutorial : MonoBehaviour
 
         readyToJump = true;
         readyToDash = true;
+
+        grounded = false;
     }
 
     private void Update()
@@ -89,6 +91,11 @@ public class PlayerMovementTutorial : MonoBehaviour
             // On ground
             rb.AddForce(10f * moveSpeed * moveDirection.normalized, ForceMode.Acceleration);
         }
+        else
+        {
+            // In air
+            rb.AddForce(10f * airMultiplier * moveSpeed * moveDirection.normalized, ForceMode.Acceleration);
+        }
     }
 
     private void SpeedControl()
@@ -105,8 +112,10 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     private void GroundControl()
     {
+        float maxDistance = playerHeight * 0.5f + 0.3f;
+
         // Ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, maxDistance, whatIsGround);
 
         // Handle drag
         if (grounded)
@@ -127,14 +136,12 @@ public class PlayerMovementTutorial : MonoBehaviour
 
         // No me acaba de convencer ninguno de los dos, lo dejo para mas adelante
         //Vector3 jumpDirection = transform.up / 2 + cameraOrientation.forward;
-        Vector3 jumpDirection = new(cameraOrientation.forward.x, 1f, cameraOrientation.forward.z);
-        rb.AddForce(10f * jumpForce * jumpDirection, ForceMode.Impulse);
+        //Vector3 jumpDirection = new(cameraOrientation.forward.x, 1f, cameraOrientation.forward.z);
+        rb.AddForce(100f * jumpForce * transform.up, ForceMode.Impulse);
     }
 
     private void Dash()
     {
-        Debug.Log(horizontalInput);
-        Debug.Log(verticalInput);
         // When there is no input just dash forward
         if (horizontalInput == 0 && verticalInput == 0)
         {
@@ -143,8 +150,6 @@ public class PlayerMovementTutorial : MonoBehaviour
         }
         else
         {
-            //Vector3 velocity = rb.velocity.normalized;
-            //Vector3 dashDirection = new(velocity.x, 0, velocity.z);
             rb.AddForce(10f * dashForce * moveDirection.normalized, ForceMode.VelocityChange);
         }
     }
