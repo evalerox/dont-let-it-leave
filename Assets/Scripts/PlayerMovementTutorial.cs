@@ -4,16 +4,11 @@ public class PlayerMovementTutorial : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
-
     public float groundDrag;
-
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump;
-
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -24,6 +19,7 @@ public class PlayerMovementTutorial : MonoBehaviour
     bool grounded;
 
     public Transform orientation;
+    public Transform cameraOrientation;
 
     float horizontalInput;
     float verticalInput;
@@ -42,59 +38,47 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     private void Update()
     {
-        // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
-
         MyInput();
         SpeedControl();
-
-        // handle drag
-        if (grounded)
-            rb.drag = groundDrag;
-        else
-            rb.drag = 0;
-
-        // FIXME: This should use FixedUpdate, but the camera stutters
-        MovePlayer();
+        GroundControl();
     }
 
-    private void FixedUpdate() { }
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
 
     private void MyInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        // when to jump
+        // Check when to jump
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
-
             Jump();
-
             Invoke(nameof(ResetJump), jumpCooldown);
         }
     }
 
     private void MovePlayer()
     {
-        // calculate movement direction
+        // Calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        // on ground
         if (grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
-        // in air
-        else if (!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+        {
+            // On ground
+            rb.AddForce(10f * moveSpeed * moveDirection.normalized, ForceMode.Acceleration);
+        }
     }
 
     private void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Vector3 flatVel = new(rb.velocity.x, 0f, rb.velocity.z);
 
-        // limit velocity if needed
+        // Limit velocity if exceeds
         if (flatVel.magnitude > moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
@@ -102,13 +86,34 @@ public class PlayerMovementTutorial : MonoBehaviour
         }
     }
 
+    private void GroundControl()
+    {
+        // Ground check
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+
+        // Handle drag
+        if (grounded)
+        {
+            rb.drag = groundDrag;
+        }
+        else
+        {
+            rb.drag = 0;
+        }
+    }
+
     private void Jump()
     {
-        // reset y velocity
+        // TODO: Review if I need this
+        // Reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        // No me acaba de convencer ninguno de los dos, lo dejo para mas adelante
+        //Vector3 jumpDirection = transform.up / 2 + cameraOrientation.forward;
+        Vector3 jumpDirection = new(cameraOrientation.forward.x, 1f, cameraOrientation.forward.z);
+        rb.AddForce(10f * jumpForce * jumpDirection, ForceMode.Impulse);
     }
+
     private void ResetJump()
     {
         readyToJump = true;
