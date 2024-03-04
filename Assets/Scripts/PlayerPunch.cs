@@ -8,7 +8,9 @@ public class PlayerPunch : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            other.GetComponent<Enemy>().RecieveHit(combat.basicPunchDamage);
+            Vector3 collisionPoint = other.ClosestPoint(transform.position);
+            Vector3 fromDirection = transform.forward;
+            other.GetComponent<Enemy>().RecieveHit(collisionPoint, fromDirection, combat.basicPunchDamage);
         }
     }
 }
