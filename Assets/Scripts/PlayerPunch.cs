@@ -6,7 +6,7 @@ public class PlayerPunch : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy") && !combat.readyToAttack)
         {
             Vector3 collisionPoint = other.ClosestPoint(transform.position);
             Vector3 fromDirection = transform.forward;
