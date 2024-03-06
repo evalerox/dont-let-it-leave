@@ -27,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform orientation;
     public Transform cameraOrientation;
 
+    public Animator animator;
+
     float horizontalInput;
     float verticalInput;
 
@@ -62,9 +64,13 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
+        bool isMoving = horizontalInput > 0.1f || horizontalInput < -0.1f || verticalInput > 0.1f || verticalInput < -0.1f;
+        animator.SetBool("Running", isMoving);
+
         // Check when to jump
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
+            animator.SetTrigger("Jump");
             readyToJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
@@ -73,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
         // Check Dash
         if (Input.GetKeyDown(dashKey) && readyToDash)
         {
+            animator.SetTrigger("Jump");
             readyToDash = false;
             rb.drag = 0;
             Dash();
