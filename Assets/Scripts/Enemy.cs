@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
         // Effects
         animator.SetTrigger("Hit");
         Instantiate(hitBloodParticle, collisionPoint, Quaternion.identity);
-        rb.AddForce(damage * 500f * fromDirection, ForceMode.Impulse);
+        rb.AddForce(damage * 500f * -transform.forward, ForceMode.Impulse);
 
         // Variables changes
         health -= damage;

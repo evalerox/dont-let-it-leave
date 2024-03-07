@@ -6,11 +6,20 @@ public class PlayerPunch : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy") && !combat.readyToAttack)
+        if (other.CompareTag("Enemy"))
         {
             Vector3 collisionPoint = other.ClosestPoint(transform.position);
             Vector3 fromDirection = transform.forward;
-            other.GetComponent<Enemy>().RecieveHit(collisionPoint, fromDirection, combat.basicPunchDamage);
+
+            if (!combat.readyToBasicAttack)
+            {
+                other.GetComponent<Enemy>().RecieveHit(collisionPoint, fromDirection, combat.basicAttackDamage);
+            }
+            else if (!combat.readyToHeavyAttack)
+            {
+                other.GetComponent<Enemy>().RecieveHit(collisionPoint, fromDirection, combat.heavyAttackDamage);
+            }
+
         }
     }
 }

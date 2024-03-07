@@ -2,38 +2,48 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public float basicPunchDamage = 1f;
-    public float attackCooldown = 1f;
+    public float basicAttackDamage = 1f;
+    public float heavyAttackDamage = 2f;
+    private float basicAttackCooldown = 0.75f;
+    private float heavyAttackCooldown = 1.5f;
 
     public Animator animator;
 
-    private bool meleeCombo;
+    private bool meleeSide;
     [HideInInspector]
-    public bool readyToAttack;
+    public bool readyToBasicAttack;
+    public bool readyToHeavyAttack;
 
     // Start is called before the first frame update
     void Start()
     {
-        meleeCombo = false;
-        readyToAttack = true;
+        meleeSide = false;
+        readyToBasicAttack = true;
+        readyToHeavyAttack = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && readyToAttack)
+        if (Input.GetKeyDown(KeyCode.Mouse0) && readyToBasicAttack)
         {
-            readyToAttack = false;
-            animator.SetTrigger("Attack");
-            Invoke(nameof(ResetReadyToAttack), attackCooldown);
-            // TODO: Search for a better attack animation
-            // meleeCombo = !meleeCombo;
-            //animator.SetInteger("MeleeCombo", meleeCombo ? 0 : 1);
+            readyToBasicAttack = false;
+            meleeSide = !meleeSide;
+            animator.SetTrigger("BasicAttack");
+            animator.SetInteger("BasicMeleeSide", meleeSide ? 0 : 1);
+            Invoke(nameof(ResetBasicAttack), basicAttackCooldown);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1) && readyToHeavyAttack)
+        {
+            readyToHeavyAttack = false;
+            meleeSide = !meleeSide;
+            animator.SetTrigger("HeavyAttack");
+            animator.SetInteger("HeavyMeleeSide", meleeSide ? 0 : 1);
+            Invoke(nameof(ResetHeavyAttack), heavyAttackCooldown);
         }
     }
 
-    private void ResetReadyToAttack()
-    {
-        readyToAttack = true;
-    }
+    private void ResetBasicAttack() { readyToBasicAttack = true; }
+    private void ResetHeavyAttack() { readyToHeavyAttack = true; }
 }
