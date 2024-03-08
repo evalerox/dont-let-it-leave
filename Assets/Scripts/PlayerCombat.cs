@@ -12,6 +12,7 @@ public class PlayerCombat : MonoBehaviour
     private bool meleeSide;
     [HideInInspector]
     public bool readyToBasicAttack;
+    [HideInInspector]
     public bool readyToHeavyAttack;
 
     // Start is called before the first frame update

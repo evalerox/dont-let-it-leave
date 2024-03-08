@@ -241,8 +241,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02ad4f615d175bf43918cd5151adc5c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basicPunchDamage: 1
+  basicAttackDamage: 1
+  heavyAttackDamage: 2
   animator: {fileID: 980293058993478519}
+  readyToBasicAttack: 0
+  readyToHeavyAttack: 0
 --- !u!1 &6118303385723303063
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,6 +255,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 323546603217001124}
+  - component: {fileID: 4820513757526239067}
   m_Layer: 0
   m_Name: Eyes
   m_TagString: Untagged
@@ -268,12 +272,33 @@ Transform:
   m_GameObject: {fileID: 6118303385723303063}
   serializedVersion: 2
   m_LocalRotation: {x: -0.21643952, y: 0, z: 0, w: 0.97629607}
-  m_LocalPosition: {x: 0, y: 0.002445, z: 0.002494}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.0000000070057, y: 0.002445, z: 0.002494}
+  m_LocalScale: {x: 0.004, y: 0.004, z: 0.004}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1670811300191033552}
   m_LocalEulerAnglesHint: {x: -25, y: 0, z: 0}
+--- !u!135 &4820513757526239067
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6118303385723303063}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.6
+  m_Center: {x: 0, y: -0.18, z: 0.42}
 --- !u!1 &7892784433654927910
 GameObject:
   m_ObjectHideFlags: 0
