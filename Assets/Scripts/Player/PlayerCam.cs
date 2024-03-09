@@ -12,6 +12,8 @@ public class PlayerCam : MonoBehaviour
 
     public Camera cam;
     public Rigidbody rb;
+    public PlayerMovement playerMovement;
+
     private float minFov;
     public float maxFov = 100f;
 
@@ -25,7 +27,7 @@ public class PlayerCam : MonoBehaviour
     void Update()
     {
         Rotation();
-        DynamicFOV();
+        //DynamicFOV();
     }
 
     void Rotation()
@@ -45,6 +47,10 @@ public class PlayerCam : MonoBehaviour
     private readonly float maxVelocity = 18f;
     void DynamicFOV()
     {
+        if (playerMovement.readyToDash)
+        {
+            return;
+        }
         float t = Mathf.SmoothStep(0, 1, rb.velocity.magnitude / maxVelocity);
         cam.fieldOfView = Mathf.Lerp(minFov, maxFov, t);
     }

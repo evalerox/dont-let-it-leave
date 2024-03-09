@@ -13,7 +13,8 @@ public class PlayerMovement : MonoBehaviour
 
     public float dashForce;
     public float dashCooldown;
-    bool readyToDash;
+    [HideInInspector]
+    public bool readyToDash;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;

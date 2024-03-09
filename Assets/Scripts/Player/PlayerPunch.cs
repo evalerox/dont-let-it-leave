@@ -9,17 +9,16 @@ public class PlayerPunch : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             Vector3 collisionPoint = other.ClosestPoint(transform.position);
-            Vector3 fromDirection = transform.forward;
+            GuardAI enemy = other.GetComponent<GuardAI>();
 
             if (!combat.readyToBasicAttack)
             {
-                other.GetComponent<Enemy>().RecieveHit(collisionPoint, fromDirection, combat.basicAttackDamage);
+                enemy.RecieveHit(collisionPoint, combat.basicAttackDamage);
             }
             else if (!combat.readyToHeavyAttack)
             {
-                other.GetComponent<Enemy>().RecieveHit(collisionPoint, fromDirection, combat.heavyAttackDamage);
+                enemy.RecieveHit(collisionPoint, combat.heavyAttackDamage);
             }
-
         }
     }
 }

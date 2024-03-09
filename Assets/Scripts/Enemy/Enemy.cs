@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void RecieveHit(Vector3 collisionPoint, Vector3 fromDirection, float damage)
+    public void RecieveHit(Vector3 collisionPoint, float damage)
     {
         if (isDead) { return; }
 
