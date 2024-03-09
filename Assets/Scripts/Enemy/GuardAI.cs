@@ -50,12 +50,12 @@ public class GuardAI : MonoBehaviour
 
         // Variables changes
         health -= damage;
-        //if (health <= 0)
-        //{
-        currentState.Die();
+        if (health <= 0)
+        {
+            currentState.Die();
 
-        Destroy(GetComponent<CapsuleCollider>());
-        Destroy(rb);
-        //}
+            Destroy(GetComponent<CapsuleCollider>());
+            Destroy(rb);
+        }
     }
 }

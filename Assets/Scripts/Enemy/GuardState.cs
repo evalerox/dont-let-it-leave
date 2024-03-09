@@ -345,7 +345,12 @@ public class Hit : GuardState
             return;
         }
 
-        if (CanSeePlayer() || CanHearPlayer())
+        if (isDead)
+        {
+            nextState = new Die(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            stage = EVENT.EXIT;
+        }
+        else if (CanSeePlayer() || CanHearPlayer())
         {
             nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             stage = EVENT.EXIT;

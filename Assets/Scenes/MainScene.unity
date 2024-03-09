@@ -1051,7 +1051,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2d786dd8733e0804e8cdeea0f7a72547,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2d786dd8733e0804e8cdeea0f7a72547,
         type: 3}
@@ -1998,6 +1998,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Ceiling_light_alternative (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2d786dd8733e0804e8cdeea0f7a72547,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2d786dd8733e0804e8cdeea0f7a72547,
         type: 3}
