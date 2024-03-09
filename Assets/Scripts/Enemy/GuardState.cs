@@ -35,9 +35,9 @@ public class GuardState
     protected bool isHit;
     protected bool isDead;
 
-    readonly float visDist = 10.0f;
+    readonly float visDist = 14.0f;
     readonly float hearDist = 5.0f;
-    readonly float visAngle = 30.0f;
+    readonly float visAngle = 45.0f;
     readonly float shootDist = 7.0f;
 
     public GuardState(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
@@ -65,7 +65,6 @@ public class GuardState
             Exit();
             return nextState;
         }
-
         return this;
     }
 
@@ -78,7 +77,6 @@ public class GuardState
         {
             return true;
         }
-
         return false;
     }
 
@@ -90,7 +88,6 @@ public class GuardState
         {
             return true;
         }
-
         return false;
     }
 
@@ -102,7 +99,6 @@ public class GuardState
         {
             return true;
         }
-
         return false;
     }
 
@@ -126,7 +122,12 @@ public class Idle : GuardState
 
     public override void Update()
     {
-        if (CanSeePlayer() || CanHearPlayer())
+        if (isHit)
+        {
+            nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            stage = EVENT.EXIT;
+        }
+        else if (CanSeePlayer() || CanHearPlayer())
         {
             nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             stage = EVENT.EXIT;
@@ -192,7 +193,12 @@ public class Patrol : GuardState
             agent.SetDestination(patrolCheckpoints[currentIndex].transform.position);
         }
 
-        if (CanSeePlayer() || CanHearPlayer())
+        if (isHit)
+        {
+            nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            stage = EVENT.EXIT;
+        }
+        else if (CanSeePlayer() || CanHearPlayer())
         {
             nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             stage = EVENT.EXIT;
@@ -233,7 +239,12 @@ public class Pursue : GuardState
 
         if (agent.hasPath)
         {
-            if (CanAttackPlayer())
+            if (isHit)
+            {
+                nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+                stage = EVENT.EXIT;
+            }
+            else if (CanAttackPlayer())
             {
                 nextState = new Attack(npc, agent, anim, player, doPatrol, patrolCheckpoints);
                 stage = EVENT.EXIT;
@@ -243,11 +254,11 @@ public class Pursue : GuardState
                 nextState = new Patrol(npc, agent, anim, player, doPatrol, patrolCheckpoints);
                 stage = EVENT.EXIT;
             }
-            else
+            /*else
             {
                 nextState = new Idle(npc, agent, anim, player, doPatrol, patrolCheckpoints);
                 stage = EVENT.EXIT;
-            }
+            }*/
         }
     }
 
@@ -289,7 +300,19 @@ public class Attack : GuardState
             Time.deltaTime * rotationSpeed
         );
 
-        if (!CanAttackPlayer())
+        if (isHit)
+        {
+            nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            shoot.Stop();
+            stage = EVENT.EXIT;
+        }
+        /*else if (!CanAttackPlayer() && CanSeePlayer() || CanHearPlayer())
+        {
+            nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            shoot.Stop();
+            stage = EVENT.EXIT;
+        }*/
+        else if (!CanAttackPlayer())
         {
             nextState = new Idle(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             shoot.Stop();
@@ -313,16 +336,25 @@ public class Hit : GuardState
         name = STATE.HIT;
     }
 
+    float clipDuration = 1f;
+
     public override void Enter()
     {
         anim.SetTrigger("isHit");
         agent.isStopped = true;
         agent.speed = 0;
+        clipDuration = 1f;
         base.Enter();
     }
 
     public override void Update()
     {
+        if (clipDuration >= 0)
+        {
+            clipDuration -= 1f * Time.deltaTime;
+            return;
+        }
+
         if (isDead)
         {
             nextState = new Die(npc, agent, anim, player, doPatrol, patrolCheckpoints);

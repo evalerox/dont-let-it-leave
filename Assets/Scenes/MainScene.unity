@@ -4827,6 +4827,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Guard (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1697461364518216087, guid: 2c9f6c04c1491c046a96d7b1101041d3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1727160588319975627, guid: 2c9f6c04c1491c046a96d7b1101041d3,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7221,6 +7226,16 @@ PrefabInstance:
       objectReference: {fileID: 1582710484}
     - target: {fileID: 1880221885528843611, guid: 733158d2c44e9914aa90978150e927cb,
         type: 3}
+      propertyPath: sensX
+      value: 175
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880221885528843611, guid: 733158d2c44e9914aa90978150e927cb,
+        type: 3}
+      propertyPath: sensY
+      value: 175
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880221885528843611, guid: 733158d2c44e9914aa90978150e927cb,
+        type: 3}
       propertyPath: maxFov
       value: 100
       objectReference: {fileID: 0}
@@ -7535,6 +7550,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Guard
+      objectReference: {fileID: 0}
+    - target: {fileID: 1697461364518216087, guid: 2c9f6c04c1491c046a96d7b1101041d3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1727160588319975627, guid: 2c9f6c04c1491c046a96d7b1101041d3,
         type: 3}

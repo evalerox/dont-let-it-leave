@@ -10,7 +10,6 @@ public class GuardAI : MonoBehaviour
     public ParticleSystem hitBloodParticle;
     public bool doPatrol = false;
     public List<GameObject> patrolCheckpoints = new();
-    //private bool isDead = false;
 
     NavMeshAgent agent;
     Animator anim;
@@ -19,7 +18,7 @@ public class GuardAI : MonoBehaviour
 
     void Start()
     {
-        //isDead = false;
+        health = maxHealth;
         agent = GetComponent<NavMeshAgent>();
         anim = transform.GetChild(0).GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -36,13 +35,13 @@ public class GuardAI : MonoBehaviour
 
     void Update()
     {
-        //if (isDead) { return; }
+        if (currentState.name == GuardState.STATE.DEAD) { return; }
         currentState = currentState.Process();
     }
 
     public void RecieveHit(Vector3 collisionPoint, float damage)
     {
-        //if (isDead) { return; }
+        if (currentState.name == GuardState.STATE.DEAD) { return; }
 
         currentState.Hit();
 
