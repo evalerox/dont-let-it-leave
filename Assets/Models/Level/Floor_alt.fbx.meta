@@ -3,7 +3,12 @@ guid: b2ebb9a871c3d6044a128a8b75346cf0
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Floor_alternative
+    second: {fileID: 2100000, guid: 45af6a3b4d7a81a4cbaeaa7eb2ce8039, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -88,7 +93,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 3
+    globalScale: 300
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
