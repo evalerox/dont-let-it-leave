@@ -32,12 +32,14 @@ public class GuardState
     protected bool doPatrol;
     protected List<GameObject> patrolCheckpoints;
 
-    protected bool isHit;
-    protected bool isDead;
+    protected bool isHit = false;
+    protected bool isDead = false;
+
+    protected Vector3 lastPlayerPositon;
 
     readonly float visDist = 14.0f;
     readonly float hearDist = 5.0f;
-    readonly float visAngle = 45.0f;
+    readonly float visAngle = 90.0f;
     readonly float shootDist = 7.0f;
 
     public GuardState(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
@@ -122,12 +124,7 @@ public class Idle : GuardState
 
     public override void Update()
     {
-        if (isHit)
-        {
-            nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-            stage = EVENT.EXIT;
-        }
-        else if (CanSeePlayer() || CanHearPlayer())
+        if (CanSeePlayer() || CanHearPlayer())
         {
             nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             stage = EVENT.EXIT;
@@ -193,21 +190,11 @@ public class Patrol : GuardState
             agent.SetDestination(patrolCheckpoints[currentIndex].transform.position);
         }
 
-        if (isHit)
-        {
-            nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-            stage = EVENT.EXIT;
-        }
-        else if (CanSeePlayer() || CanHearPlayer())
+        if (CanSeePlayer() || CanHearPlayer())
         {
             nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             stage = EVENT.EXIT;
         }
-        /*else if (IsPlayerBehind())
-        {
-            nextState = new RunAway(npc, agent, anim, player);
-            stage = EVENT.EXIT;
-        }*/
     }
 
     public override void Exit()
@@ -229,22 +216,25 @@ public class Pursue : GuardState
 
     public override void Enter()
     {
+        lastPlayerPositon = player.position;
         anim.SetTrigger("isRunning");
         base.Enter();
     }
 
     public override void Update()
     {
-        agent.SetDestination(player.position);
+        if (CanSeePlayer())
+        {
+            agent.SetDestination(player.position);
+        }
+        else
+        {
+            agent.SetDestination(lastPlayerPositon);
+        }
 
         if (agent.hasPath)
         {
-            if (isHit)
-            {
-                nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-                stage = EVENT.EXIT;
-            }
-            else if (CanAttackPlayer())
+            if (CanAttackPlayer())
             {
                 nextState = new Attack(npc, agent, anim, player, doPatrol, patrolCheckpoints);
                 stage = EVENT.EXIT;
@@ -254,16 +244,17 @@ public class Pursue : GuardState
                 nextState = new Patrol(npc, agent, anim, player, doPatrol, patrolCheckpoints);
                 stage = EVENT.EXIT;
             }
-            /*else
-            {
-                nextState = new Idle(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-                stage = EVENT.EXIT;
-            }*/
+        }
+        else
+        {
+            nextState = new Idle(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            stage = EVENT.EXIT;
         }
     }
 
     public override void Exit()
     {
+        lastPlayerPositon = player.position;
         anim.ResetTrigger("isRunning");
         base.Exit();
     }
@@ -300,21 +291,20 @@ public class Attack : GuardState
             Time.deltaTime * rotationSpeed
         );
 
-        if (isHit)
+        if (isDead)
+        {
+            nextState = new Die(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            stage = EVENT.EXIT;
+        }
+        else if (isHit)
         {
             nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             shoot.Stop();
             stage = EVENT.EXIT;
         }
-        /*else if (!CanAttackPlayer() && CanSeePlayer() || CanHearPlayer())
-        {
-            nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-            shoot.Stop();
-            stage = EVENT.EXIT;
-        }*/
         else if (!CanAttackPlayer())
         {
-            nextState = new Idle(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             shoot.Stop();
             stage = EVENT.EXIT;
         }
@@ -330,13 +320,13 @@ public class Attack : GuardState
 
 public class Hit : GuardState
 {
+    float clipDuration = 1f;
+
     public Hit(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
         : base(_npc, _agent, _anim, _player, _doPatrol, _patrolCheckpoints)
     {
         name = STATE.HIT;
     }
-
-    float clipDuration = 1f;
 
     public override void Enter()
     {
@@ -355,12 +345,7 @@ public class Hit : GuardState
             return;
         }
 
-        if (isDead)
-        {
-            nextState = new Die(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-            stage = EVENT.EXIT;
-        }
-        else if (CanSeePlayer() || CanHearPlayer())
+        if (CanSeePlayer() || CanHearPlayer())
         {
             nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             stage = EVENT.EXIT;
@@ -368,11 +353,6 @@ public class Hit : GuardState
         else if (doPatrol && Random.Range(0, 100) < 10)
         {
             nextState = new Patrol(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-            stage = EVENT.EXIT;
-        }
-        else
-        {
-            nextState = new Idle(npc, agent, anim, player, doPatrol, patrolCheckpoints);
             stage = EVENT.EXIT;
         }
     }

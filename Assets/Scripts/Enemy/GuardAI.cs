@@ -35,7 +35,6 @@ public class GuardAI : MonoBehaviour
 
     void Update()
     {
-        if (currentState.name == GuardState.STATE.DEAD) { return; }
         currentState = currentState.Process();
     }
 
@@ -51,12 +50,12 @@ public class GuardAI : MonoBehaviour
 
         // Variables changes
         health -= damage;
-        if (health <= 0)
-        {
-            currentState.Die();
+        //if (health <= 0)
+        //{
+        currentState.Die();
 
-            Destroy(GetComponent<CapsuleCollider>());
-            Destroy(rb);
-        }
+        Destroy(GetComponent<CapsuleCollider>());
+        Destroy(rb);
+        //}
     }
 }
