@@ -35,7 +35,7 @@ public class GuardState
 
     protected Vector3 lastPlayerPositon;
 
-    readonly float visDist = 14.0f;
+    readonly float visDist = 12.0f;
     readonly float hearDist = 5.0f;
     readonly float visAngle = 90.0f;
     readonly float shootDist = 10.0f;
