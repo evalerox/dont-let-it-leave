@@ -1,15 +1,20 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public float maxHealth = 10f;
     public float health;
     public float healCooldown = 3f;
-    public bool isHealing;
+    public bool isHealing = false;
+    private bool isDead = false;
 
     public Volume myVolume;
+    public Animator animator;
+    public GameObject deadCanvas;
     private Vignette vg;
 
     // Start is called before the first frame update
@@ -17,6 +22,7 @@ public class Player : MonoBehaviour
     {
         health = maxHealth;
         isHealing = false;
+        isDead = false;
 
         myVolume.profile.TryGet(out Vignette vg);
         this.vg = vg;
@@ -42,27 +48,25 @@ public class Player : MonoBehaviour
             isHealing = false;
             CancelInvoke();
             Invoke(nameof(ResetAutoHealing), healCooldown);
-            //StartCoroutine(ResetAutoHealing());
 
-            if (health <= 0)
+            if (health <= 0 && !isDead)
             {
-                Debug.Log("Dead");
-                Dead();
+                StartCoroutine(Dead());
             }
         }
     }
 
-    void Dead()
-    {
-        Destroy(this.gameObject);
-    }
-
     private void ResetAutoHealing() { isHealing = true; }
 
-    /*IEnumerator ResetAutoHealing()
+    IEnumerator Dead()
     {
-        isHealing = false;
-        yield return new WaitForSeconds(healCooldown);
-        isHealing = true;
-    }*/
+        isDead = true;
+        animator.SetTrigger("Dead");
+        Destroy(GetComponent<PlayerMovement>());
+        Destroy(GetComponent<PlayerCombat>());
+        yield return new WaitForSeconds(1f);
+        deadCanvas.SetActive(true);
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+    }
 }
