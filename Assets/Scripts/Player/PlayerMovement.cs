@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     public float dashCooldown;
     [HideInInspector]
     public bool readyToDash;
+    [HideInInspector]
+    public bool dashDone;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -80,11 +82,13 @@ public class PlayerMovement : MonoBehaviour
         // Check Dash
         if (Input.GetKeyDown(dashKey) && readyToDash)
         {
-            animator.SetTrigger("Jump");
+            //animator.SetTrigger("Jump");
+            dashDone = true;
             readyToDash = false;
             rb.drag = 0;
             Dash();
             rb.drag = groundDrag;
+            Invoke(nameof(ResetDashDone), 0.5f);
             Invoke(nameof(ResetDash), dashCooldown);
         }
     }
@@ -138,13 +142,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        // TODO: Review if I need this
         // Reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        // No me acaba de convencer ninguno de los dos, lo dejo para mas adelante
-        //Vector3 jumpDirection = transform.up / 2 + cameraOrientation.forward;
-        //Vector3 jumpDirection = new(cameraOrientation.forward.x, 1f, cameraOrientation.forward.z);
         rb.AddForce(100f * jumpForce * transform.up, ForceMode.Impulse);
     }
 
@@ -162,13 +162,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void ResetJump()
-    {
-        readyToJump = true;
-    }
+    private void ResetJump() { readyToJump = true; }
 
-    private void ResetDash()
-    {
-        readyToDash = true;
-    }
+    private void ResetDash() { readyToDash = true; }
+    private void ResetDashDone() { dashDone = false; }
 }

@@ -15,7 +15,7 @@ public class PlayerCam : MonoBehaviour
     public PlayerMovement playerMovement;
 
     private float minFov;
-    public float maxFov = 100f;
+    public float maxFov = 90f;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +27,7 @@ public class PlayerCam : MonoBehaviour
     void Update()
     {
         Rotation();
-        //DynamicFOV();
+        DynamicFOV();
     }
 
     void Rotation()
@@ -44,14 +44,15 @@ public class PlayerCam : MonoBehaviour
         player.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
-    private readonly float maxVelocity = 18f;
     void DynamicFOV()
     {
-        if (playerMovement.readyToDash)
+        if (!playerMovement.dashDone)
         {
-            return;
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, minFov, 0.1f);
         }
-        float t = Mathf.SmoothStep(0, 1, rb.velocity.magnitude / maxVelocity);
-        cam.fieldOfView = Mathf.Lerp(minFov, maxFov, t);
+        else
+        {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, maxFov, 0.1f);
+        }
     }
 }

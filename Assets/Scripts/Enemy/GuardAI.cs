@@ -6,10 +6,18 @@ public class GuardAI : MonoBehaviour
 {
     public float maxHealth = 10f;
     private float health;
+
     public Transform player;
     public ParticleSystem hitBloodParticle;
+
     public bool doPatrol = false;
     public List<GameObject> patrolCheckpoints = new();
+
+    public Transform bulletEmitter;
+    public GameObject bulletPrefab;
+    public AudioSource shootSource;
+    public bool readyToShoot;
+    public float shootCooldown = 0.75f;
 
     NavMeshAgent agent;
     Animator anim;
@@ -19,24 +27,42 @@ public class GuardAI : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+        readyToShoot = true;
+
         agent = GetComponent<NavMeshAgent>();
         anim = transform.GetChild(0).GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
 
-        currentState = new Idle(
-            gameObject,
-            agent,
-            anim,
-            player,
-            doPatrol,
-            patrolCheckpoints
-        );
+        // TODO: Remove patrol checkpoints from here
+        currentState = new Idle(gameObject, agent, anim, player);
     }
 
     void Update()
     {
         currentState = currentState.Process();
+
+        if (currentState.name == GuardState.STATE.ATTACK)
+        {
+            FireBullet();
+        }
     }
+
+    void FireBullet()
+    {
+        if (!readyToShoot) return;
+
+        readyToShoot = false;
+
+        shootSource.pitch = Random.Range(0.8f, 1f);
+        shootSource.Play();
+
+        // Fire bullet
+        Instantiate(bulletPrefab, bulletEmitter.position, transform.rotation);
+
+        Invoke(nameof(ResetShoot), shootCooldown);
+    }
+
+    private void ResetShoot() { readyToShoot = true; }
 
     public void RecieveHit(Vector3 collisionPoint, float damage)
     {

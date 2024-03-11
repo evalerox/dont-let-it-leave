@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public float basicAttackDamage = 1f;
-    public float heavyAttackDamage = 2f;
-    private float basicAttackCooldown = 0.75f;
-    private float heavyAttackCooldown = 1.5f;
+    public float basicAttackDamage = 0.5f;
+    public float heavyAttackDamage = 1.5f;
+    private readonly float basicAttackCooldown = 0.75f;
+    private readonly float heavyAttackCooldown = 1.5f;
 
     public Animator animator;
 

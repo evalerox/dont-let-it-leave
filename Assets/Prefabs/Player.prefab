@@ -148,6 +148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9018429906841673445}
   - component: {fileID: 4258926289880803315}
+  - component: {fileID: 7917553825308169286}
   - component: {fileID: 1891129793727363219}
   - component: {fileID: 2635545240649925461}
   m_Layer: 0
@@ -201,6 +202,23 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &7917553825308169286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3187507046135766312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a8ca5c96ab4bc47b16eaa8436dbdf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+  health: 0
+  healCooldown: 3
+  isHealing: 0
+  myVolume: {fileID: 0}
 --- !u!114 &1891129793727363219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,6 +238,8 @@ MonoBehaviour:
   jumpCooldown: 2
   dashForce: 30
   dashCooldown: 3
+  readyToDash: 0
+  dashDone: 0
   jumpKey: 32
   dashKey: 304
   playerHeight: 2

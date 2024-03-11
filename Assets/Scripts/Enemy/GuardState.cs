@@ -29,8 +29,6 @@ public class GuardState
     protected Transform player;
     protected GuardState nextState;
     protected NavMeshAgent agent;
-    protected bool doPatrol;
-    protected List<GameObject> patrolCheckpoints;
 
     protected bool isHit = false;
     protected bool isDead = false;
@@ -40,16 +38,14 @@ public class GuardState
     readonly float visDist = 14.0f;
     readonly float hearDist = 5.0f;
     readonly float visAngle = 90.0f;
-    readonly float shootDist = 7.0f;
+    readonly float shootDist = 10.0f;
 
-    public GuardState(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
+    public GuardState(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
     {
         npc = _npc;
         agent = _agent;
         anim = _anim;
         player = _player;
-        doPatrol = _doPatrol;
-        patrolCheckpoints = _patrolCheckpoints;
 
         stage = EVENT.ENTER;
     }
@@ -110,10 +106,14 @@ public class GuardState
 
 public class Idle : GuardState
 {
-    public Idle(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
-        : base(_npc, _agent, _anim, _player, _doPatrol, _patrolCheckpoints)
+    readonly bool doPatrol;
+
+    public Idle(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
+        : base(_npc, _agent, _anim, _player)
     {
         name = STATE.IDLE;
+
+        doPatrol = _npc.GetComponent<GuardAI>().doPatrol;
     }
 
     public override void Enter()
@@ -126,12 +126,12 @@ public class Idle : GuardState
     {
         if (CanSeePlayer() || CanHearPlayer())
         {
-            nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Pursue(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
         else if (doPatrol && Random.Range(0, 100) < 10)
         {
-            nextState = new Patrol(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Patrol(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
     }
@@ -146,13 +146,16 @@ public class Idle : GuardState
 public class Patrol : GuardState
 {
     int currentIndex = -1;
+    List<GameObject> patrolCheckpoints;
 
-    public Patrol(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
-        : base(_npc, _agent, _anim, _player, _doPatrol, _patrolCheckpoints)
+    public Patrol(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
+        : base(_npc, _agent, _anim, _player)
     {
         name = STATE.PATROL;
         agent.speed = 2.0f;
         agent.isStopped = false;
+
+        patrolCheckpoints = _npc.GetComponent<GuardAI>().patrolCheckpoints;
     }
 
     public override void Enter()
@@ -192,7 +195,7 @@ public class Patrol : GuardState
 
         if (CanSeePlayer() || CanHearPlayer())
         {
-            nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Pursue(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
     }
@@ -206,12 +209,16 @@ public class Patrol : GuardState
 
 public class Pursue : GuardState
 {
-    public Pursue(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
-        : base(_npc, _agent, _anim, _player, _doPatrol, _patrolCheckpoints)
+    readonly bool doPatrol;
+
+    public Pursue(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
+        : base(_npc, _agent, _anim, _player)
     {
         name = STATE.PURSUE;
         agent.speed = 5.0f;
         agent.isStopped = false;
+
+        doPatrol = _npc.GetComponent<GuardAI>().doPatrol;
     }
 
     public override void Enter()
@@ -236,18 +243,18 @@ public class Pursue : GuardState
         {
             if (CanAttackPlayer())
             {
-                nextState = new Attack(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+                nextState = new Attack(npc, agent, anim, player);
                 stage = EVENT.EXIT;
             }
             else if (doPatrol && !CanSeePlayer())
             {
-                nextState = new Patrol(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+                nextState = new Patrol(npc, agent, anim, player);
                 stage = EVENT.EXIT;
             }
         }
         else
         {
-            nextState = new Idle(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Idle(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
     }
@@ -262,21 +269,18 @@ public class Pursue : GuardState
 
 public class Attack : GuardState
 {
-    readonly float rotationSpeed = 2.0f;
-    readonly AudioSource shoot;
+    readonly float rotationSpeed = 10.0f;
 
-    public Attack(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
-        : base(_npc, _agent, _anim, _player, _doPatrol, _patrolCheckpoints)
+    public Attack(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
+        : base(_npc, _agent, _anim, _player)
     {
         name = STATE.ATTACK;
-        shoot = _npc.GetComponent<AudioSource>();
     }
 
     public override void Enter()
     {
         anim.SetTrigger("isShooting");
         agent.isStopped = true;
-        shoot.Play();
         base.Enter();
     }
 
@@ -293,19 +297,17 @@ public class Attack : GuardState
 
         if (isDead)
         {
-            nextState = new Die(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Die(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
         else if (isHit)
         {
-            nextState = new Hit(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-            shoot.Stop();
+            nextState = new Hit(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
         else if (!CanAttackPlayer())
         {
-            nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
-            shoot.Stop();
+            nextState = new Pursue(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
     }
@@ -313,19 +315,20 @@ public class Attack : GuardState
     public override void Exit()
     {
         anim.ResetTrigger("isShooting");
-        shoot.Stop();
         base.Exit();
     }
 }
 
 public class Hit : GuardState
 {
-    float clipDuration = 1f;
+    readonly bool doPatrol;
+    float clipDuration = 0.75f;
 
-    public Hit(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
-        : base(_npc, _agent, _anim, _player, _doPatrol, _patrolCheckpoints)
+    public Hit(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
+        : base(_npc, _agent, _anim, _player)
     {
         name = STATE.HIT;
+        doPatrol = _npc.GetComponent<GuardAI>().doPatrol;
     }
 
     public override void Enter()
@@ -339,7 +342,7 @@ public class Hit : GuardState
 
     public override void Update()
     {
-        if (clipDuration >= 0)
+        if (clipDuration > 0)
         {
             clipDuration -= 1f * Time.deltaTime;
             return;
@@ -347,17 +350,17 @@ public class Hit : GuardState
 
         if (isDead)
         {
-            nextState = new Die(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Die(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
         else if (CanSeePlayer() || CanHearPlayer())
         {
-            nextState = new Pursue(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Pursue(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
         else if (doPatrol && Random.Range(0, 100) < 10)
         {
-            nextState = new Patrol(npc, agent, anim, player, doPatrol, patrolCheckpoints);
+            nextState = new Patrol(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
     }
@@ -372,8 +375,8 @@ public class Hit : GuardState
 
 public class Die : GuardState
 {
-    public Die(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player, bool _doPatrol, List<GameObject> _patrolCheckpoints)
-        : base(_npc, _agent, _anim, _player, _doPatrol, _patrolCheckpoints)
+    public Die(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
+        : base(_npc, _agent, _anim, _player)
     {
         name = STATE.DEAD;
     }
