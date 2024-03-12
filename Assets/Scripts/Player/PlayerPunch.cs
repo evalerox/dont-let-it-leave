@@ -13,10 +13,14 @@ public class PlayerPunch : MonoBehaviour
 
             if (!combat.readyToBasicAttack)
             {
+                combat.attackEnemySound.pitch = Random.Range(0.7f, 0.9f);
+                combat.attackEnemySound.Play();
                 enemy.RecieveHit(collisionPoint, combat.basicAttackDamage);
             }
             else if (!combat.readyToHeavyAttack)
             {
+                combat.attackEnemySound.pitch = Random.Range(0.9f, 1.2f);
+                combat.attackEnemySound.Play();
                 enemy.RecieveHit(collisionPoint, combat.heavyAttackDamage);
             }
         }

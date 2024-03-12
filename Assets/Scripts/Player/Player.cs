@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     public GameObject deadCanvas;
     public GameObject completeLevelCanvas;
     private Vignette vg;
+    public AudioSource hitSound;
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +46,9 @@ public class Player : MonoBehaviour
         if (other.CompareTag("Bullet"))
         {
             health--;
+
+            hitSound.pitch = Random.Range(0.9f, 1.1f);
+            hitSound.Play();
 
             isHealing = false;
             CancelInvoke();

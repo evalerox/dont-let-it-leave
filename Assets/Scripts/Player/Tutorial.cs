@@ -7,20 +7,25 @@ public class Tutorial : MonoBehaviour
     public TextMeshProUGUI dashText;
     public TextMeshProUGUI combatText;
 
+    public AudioSource tutorialSound;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Tutorial_jump") && jumpText)
         {
+            tutorialSound.Play();
             jumpText.enabled = true;
         }
 
         if (other.CompareTag("Tutorial_dash") && dashText)
         {
+            tutorialSound.Play();
             dashText.enabled = true;
         }
 
         if (other.CompareTag("Tutorial_combat") && combatText)
         {
+            tutorialSound.Play();
             combatText.enabled = true;
         }
     }

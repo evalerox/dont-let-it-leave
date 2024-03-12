@@ -39,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
+    public AudioSource jumpSound;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -76,6 +78,10 @@ public class PlayerMovement : MonoBehaviour
             animator.SetTrigger("Jump");
             readyToJump = false;
             Jump();
+
+            jumpSound.pitch = Random.Range(0.9f, 1.1f);
+            jumpSound.Play();
+
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
@@ -87,6 +93,10 @@ public class PlayerMovement : MonoBehaviour
             readyToDash = false;
             rb.drag = 0;
             Dash();
+
+            jumpSound.pitch = Random.Range(0.9f, 1.1f);
+            jumpSound.Play();
+
             rb.drag = groundDrag;
             Invoke(nameof(ResetDashDone), 0.5f);
             Invoke(nameof(ResetDash), dashCooldown);

@@ -9,6 +9,9 @@ public class PlayerCombat : MonoBehaviour
 
     public Animator animator;
 
+    public AudioSource attackEnemySound;
+    public AudioSource attackAirSound;
+
     private bool meleeSide;
     [HideInInspector]
     public bool readyToBasicAttack;
@@ -30,8 +33,13 @@ public class PlayerCombat : MonoBehaviour
         {
             readyToBasicAttack = false;
             meleeSide = !meleeSide;
+
             animator.SetTrigger("BasicAttack");
             animator.SetInteger("BasicMeleeSide", meleeSide ? 0 : 1);
+
+            attackAirSound.pitch = Random.Range(0.7f, 0.9f);
+            attackAirSound.Play();
+
             Invoke(nameof(ResetBasicAttack), basicAttackCooldown);
         }
 
@@ -39,8 +47,13 @@ public class PlayerCombat : MonoBehaviour
         {
             readyToHeavyAttack = false;
             meleeSide = !meleeSide;
+
             animator.SetTrigger("HeavyAttack");
             animator.SetInteger("HeavyMeleeSide", meleeSide ? 0 : 1);
+
+            attackAirSound.pitch = Random.Range(0.9f, 1.2f);
+            attackAirSound.Play();
+
             Invoke(nameof(ResetHeavyAttack), heavyAttackCooldown);
         }
     }
