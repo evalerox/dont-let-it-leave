@@ -10,6 +10,9 @@ TagManager:
   - Bullet
   - Elevator
   - GreenLiquid
+  - Tutorial_jump
+  - Tutorial_dash
+  - Tutorial_combat
   layers:
   - Default
   - TransparentFX

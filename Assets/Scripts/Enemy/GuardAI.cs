@@ -21,11 +21,15 @@ public class GuardAI : MonoBehaviour
 
     NavMeshAgent agent;
     Animator anim;
-    GuardState currentState;
+    [HideInInspector]
+    public GuardState currentState;
     Rigidbody rb;
+    [HideInInspector]
+    public bool isDead;
 
     void Start()
     {
+        isDead = false;
         health = maxHealth;
         readyToShoot = true;
 
@@ -33,7 +37,6 @@ public class GuardAI : MonoBehaviour
         anim = transform.GetChild(0).GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
 
-        // TODO: Remove patrol checkpoints from here
         currentState = new Idle(gameObject, agent, anim, player);
     }
 
@@ -78,6 +81,7 @@ public class GuardAI : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
+            isDead = true;
             currentState.Die();
 
             Destroy(GetComponent<CapsuleCollider>());

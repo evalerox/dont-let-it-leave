@@ -219,6 +219,9 @@ MonoBehaviour:
   healCooldown: 3
   isHealing: 0
   myVolume: {fileID: 0}
+  animator: {fileID: 980293058993478519}
+  deadCanvas: {fileID: 0}
+  completeLevelCanvas: {fileID: 0}
 --- !u!114 &1891129793727363219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +237,7 @@ MonoBehaviour:
   moveSpeed: 12
   groundDrag: 3
   airMultiplier: 0.04
-  jumpForce: 15
+  jumpForce: 18
   jumpCooldown: 2
   dashForce: 30
   dashCooldown: 3
