@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public Volume myVolume;
     public Animator animator;
     public GameObject deadCanvas;
+    public GameObject completeLevelCanvas;
     private Vignette vg;
 
     // Start is called before the first frame update
@@ -54,6 +55,17 @@ public class Player : MonoBehaviour
                 StartCoroutine(Dead());
             }
         }
+
+        if (other.CompareTag("Elevator"))
+        {
+            Animator elevatorAnimator = other.GetComponent<Animator>();
+            StartCoroutine(CompleteLevel(elevatorAnimator));
+        }
+
+        if (other.CompareTag("GreenLiquid") && !isDead)
+        {
+            StartCoroutine(Dead());
+        }
     }
 
     private void ResetAutoHealing() { isHealing = true; }
@@ -68,5 +80,14 @@ public class Player : MonoBehaviour
         deadCanvas.SetActive(true);
         yield return new WaitForSeconds(5f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+    }
+
+    IEnumerator CompleteLevel(Animator elevatorAnimator)
+    {
+        elevatorAnimator.SetTrigger("Close");
+        yield return new WaitForSeconds(1f);
+        completeLevelCanvas.SetActive(true);
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1, LoadSceneMode.Single);
     }
 }

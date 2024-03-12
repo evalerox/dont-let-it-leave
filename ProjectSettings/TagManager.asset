@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - Checkpoint
   - Bullet
+  - Elevator
+  - GreenLiquid
   layers:
   - Default
   - TransparentFX
