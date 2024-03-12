@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
 
     public AudioSource jumpSound;
+    public AudioSource footStepsSound;
 
     private void Start()
     {
@@ -71,6 +72,16 @@ public class PlayerMovement : MonoBehaviour
 
         bool isMoving = horizontalInput > 0.1f || horizontalInput < -0.1f || verticalInput > 0.1f || verticalInput < -0.1f;
         animator.SetBool("Running", isMoving);
+
+        if (isMoving)
+        {
+            footStepsSound.pitch = Random.Range(0.8f, 1.2f);
+            footStepsSound.enabled = true;
+        }
+        else
+        {
+            footStepsSound.enabled = false;
+        }
 
         // Check when to jump
         if (Input.GetKey(jumpKey) && readyToJump && grounded)

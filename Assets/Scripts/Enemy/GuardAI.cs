@@ -16,6 +16,7 @@ public class GuardAI : MonoBehaviour
     public Transform bulletEmitter;
     public GameObject bulletPrefab;
     public AudioSource shootSource;
+    public AudioSource hitSound;
     public bool readyToShoot;
     public float shootCooldown = 0.75f;
 
@@ -72,6 +73,9 @@ public class GuardAI : MonoBehaviour
         if (currentState.name == GuardState.STATE.DEAD) { return; }
 
         currentState.Hit();
+
+        hitSound.pitch = Random.Range(0.7f, 1.1f);
+        hitSound.Play();
 
         // Effects
         Instantiate(hitBloodParticle, collisionPoint, Quaternion.identity);

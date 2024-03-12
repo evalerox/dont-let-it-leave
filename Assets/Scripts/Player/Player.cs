@@ -19,12 +19,16 @@ public class Player : MonoBehaviour
     private Vignette vg;
     public AudioSource hitSound;
 
+    bool elevator;
+
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
         isHealing = false;
         isDead = false;
+
+        elevator = false;
 
         myVolume.profile.TryGet(out Vignette vg);
         this.vg = vg;
@@ -47,8 +51,11 @@ public class Player : MonoBehaviour
         {
             health--;
 
-            hitSound.pitch = Random.Range(0.9f, 1.1f);
-            hitSound.Play();
+            if (!isDead)
+            {
+                hitSound.pitch = Random.Range(0.9f, 1.1f);
+                hitSound.Play();
+            }
 
             isHealing = false;
             CancelInvoke();
@@ -60,10 +67,12 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (other.CompareTag("Elevator"))
+        if (other.CompareTag("Elevator") && !elevator)
         {
+            elevator = true;
             Animator elevatorAnimator = other.GetComponent<Animator>();
-            StartCoroutine(CompleteLevel(elevatorAnimator));
+            AudioSource elevatorOpenSound = other.GetComponent<Elevator>().elevatorSound;
+            StartCoroutine(CompleteLevel(elevatorAnimator, elevatorOpenSound));
         }
 
         if (other.CompareTag("GreenLiquid") && !isDead)
@@ -86,9 +95,10 @@ public class Player : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
     }
 
-    IEnumerator CompleteLevel(Animator elevatorAnimator)
+    IEnumerator CompleteLevel(Animator elevatorAnimator, AudioSource elevatorOpenSound)
     {
         elevatorAnimator.SetTrigger("Close");
+        elevatorOpenSound.Play();
         yield return new WaitForSeconds(1f);
         completeLevelCanvas.SetActive(true);
         yield return new WaitForSeconds(5f);

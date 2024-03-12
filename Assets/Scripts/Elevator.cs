@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class Elevator : MonoBehaviour
 
     Animator animator;
     bool levelComplete;
+
+    public AudioSource elevatorBipSound;
+    public AudioSource elevatorSound;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +34,15 @@ public class Elevator : MonoBehaviour
         if (areAllEnemiesDead && !levelComplete)
         {
             levelComplete = true;
-            animator.SetTrigger("Open");
+            StartCoroutine(CompleteLevel());
         }
+    }
+
+    IEnumerator CompleteLevel()
+    {
+        elevatorBipSound.Play();
+        yield return new WaitForSeconds(2f);
+        animator.SetTrigger("Open");
+        elevatorSound.Play();
     }
 }
