@@ -30,11 +30,14 @@ public class Elevator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool areAllEnemiesDead = enemiesList.All(g => g.isDead || g.currentState.name == GuardState.STATE.DEAD);
-        if (areAllEnemiesDead && !levelComplete)
+        if (enemiesList.Count > 0)
         {
-            levelComplete = true;
-            StartCoroutine(OpenElevator());
+            bool areAllEnemiesDead = enemiesList.All(g => g.isDead || g.currentState.name == GuardState.STATE.DEAD);
+            if (areAllEnemiesDead && !levelComplete)
+            {
+                levelComplete = true;
+                StartCoroutine(OpenElevator());
+            }
         }
     }
 
