@@ -23,7 +23,7 @@ public class Elevator : MonoBehaviour
 
         if (startOpen)
         {
-            animator.SetTrigger("Open");
+            StartCoroutine(OpenElevator());
         }
     }
 
@@ -34,11 +34,11 @@ public class Elevator : MonoBehaviour
         if (areAllEnemiesDead && !levelComplete)
         {
             levelComplete = true;
-            StartCoroutine(CompleteLevel());
+            StartCoroutine(OpenElevator());
         }
     }
 
-    IEnumerator CompleteLevel()
+    IEnumerator OpenElevator()
     {
         elevatorBipSound.Play();
         yield return new WaitForSeconds(2f);
