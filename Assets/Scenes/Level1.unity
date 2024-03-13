@@ -74935,7 +74935,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!82 &2046509015
 AudioSource:
   m_ObjectHideFlags: 0
@@ -79841,10 +79841,27 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2429223620234233018, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
+        type: 3}
+      propertyPath: m_text
+      value: 'Game Complete!
+
+        Thanks for playing '
+      objectReference: {fileID: 0}
+    - target: {fileID: 2429223620234233018, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2526937520508626403, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
         type: 3}
       propertyPath: m_Name
       value: CompleteLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2526937520508626403, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3101548662841974072, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
         type: 3}
@@ -79945,6 +79962,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5579426844209469402, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
+        type: 3}
+      propertyPath: m_text
+      value: Press ESCAPE key to close the game
+      objectReference: {fileID: 0}
+    - target: {fileID: 5823419923946514838, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1096.263
+      objectReference: {fileID: 0}
+    - target: {fileID: 5823419923946514838, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6160098138907883423, guid: 236dbb6cfcbd7a84b9ea9edfdc1e4ead,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 642.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
